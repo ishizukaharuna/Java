@@ -164,9 +164,15 @@ class CalculateSales {
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
+
 				//商品別の売上をマップに置く（集計）
 				Long coTotal = coEarmap.get(rcdlists.get(1)) + brEar;
 				coEarmap.put(rcdlists.get(1), coTotal);
+				String covaluse = Long.toString(coEarmap.get(rcdlists.get(1)));
+				if(covaluse.length() >10){
+					System.out.println("合計金額が10桁を超えました");
+					return;
+				}
 			}catch(NumberFormatException e){
 				System.out.println("予期せぬエラーが発生しました");
 				return;
