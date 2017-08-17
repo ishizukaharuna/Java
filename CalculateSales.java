@@ -141,16 +141,16 @@ class CalculateSales {
 					System.out.println(r.getName()+"のフォーマットが不正です");
 					return;
 				}
-				if(branchmap.get(rcdlists.get(0)) == null){
-					System.out.print(r.getName()+"の支店コードが不正です");
+				if(!branchmap.containsKey(rcdlists.get(0))){
+					System.out.println(r.getName()+"の支店コードが不正です");
 					return;
 				}
-				if(commodiymap.get(rcdlists.get(1)) == null){
+				if(!commodiymap.containsKey(rcdlists.get(1))){
 					System.out.println(r.getName()+"の商品コードが不正です");
 					return;
 				}
 
-				if(rcdlists.get(2).matches("[\\d]")){
+				if(!rcdlists.get(2).matches("\\d+")){
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
@@ -240,7 +240,7 @@ class CalculateSales {
 
 		//commodiy.outに書き込み
 		try{
-			File file = new File(args[0],"commodiy.out");
+			File file = new File(args[0],"commodity.out");
 			FileWriter fw = new FileWriter(file);
 			bw = new BufferedWriter(fw);
 			for(Entry<String,Long> s :coentries){;
