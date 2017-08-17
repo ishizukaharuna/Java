@@ -41,7 +41,7 @@ class CalculateSales {
 			while((b = br.readLine()) !=null){
 				//一行ずつ","で分割する
 				String[]branch = b.split(",");
-				if(branch.length != 2 && !branch[0].matches("^\\d{3}$")){
+				if(branch.length != 2 || !branch[0].matches("^\\d{3}$")){
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return;
 				}
@@ -76,7 +76,7 @@ class CalculateSales {
 			while((c=br.readLine()) !=null){
 				//一行ずつ","で分割する
 				String[] commodiy =c.split(",");
-				if(commodiy.length != 2 && !commodiy[0].matches("^[0-9a-zA-Z]{8}$")){
+				if(commodiy.length != 2 || !commodiy[0].matches("^[0-9a-zA-Z]{8}$")){
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 					return;
 				}
@@ -117,7 +117,7 @@ class CalculateSales {
 			ii = i-1;
 			if(i>=1){
 				if(numberlist.get(i)- numberlist.get(ii) != 1){
-					System.out.println(numberlist.get(i)+"の売上ファイル名が連番になっていません");
+					System.out.println("売上ファイル名が連番になっていません");
 					return;
 				}
 			}
@@ -138,7 +138,7 @@ class CalculateSales {
 
 				File r = rcdfiles.get(i);
 				if(rcdlists.size() != 3 ){
-					System.out.println(r.getName()+"のフェイルフォーマットが不正です");
+					System.out.println(r.getName()+"のフォーマットが不正です");
 					return;
 				}
 				if(branchmap.get(rcdlists.get(0)) == null){
@@ -160,7 +160,7 @@ class CalculateSales {
 				Long brTotal = brEarmap.get(rcdlists.get(0)) + brEar;
 				brEarmap.put(rcdlists.get(0), brTotal);
 				String brvaluse = Long.toString(brEarmap.get(rcdlists.get(0)));
-				if(!brvaluse.matches("^\\d{1,10}$")){
+				if(brvaluse.length() > 10){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
@@ -208,7 +208,7 @@ class CalculateSales {
 					(s.getKey()) + "," + s.getValue()+System.getProperty("line.separator"));
 			}
 		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました。");
+			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}finally{
 			if(bw !=null)
