@@ -29,13 +29,11 @@ class CalculateSales {
 		}
 
 		//【branch.lst（支店定義ファイル）の読み込み】
-		if(!inPutfile(args[0],"branch.lst","支店定義ファイルが存在しません",
-				"^\\d{3}$","支店定義ファイルのフォーマットが不正です",branchmap,brEarmap)){
+		if(!inPutfile(args[0],"branch.lst","支店","^\\d{3}$",branchmap,brEarmap)){
 			return;
 		}
 		//【commodiy.lst（商品定義ファイル）の読み込み】
-		if(!inPutfile(args[0],"commodity.lst","商品定義ファイルが存在しません",
-				"^[0-9a-zA-Z]{8}$","商品定義ファイルのフォーマットが不正です",commodiymap,coEarmap)){
+		if(!inPutfile(args[0],"commodity.lst","商品","^[0-9a-zA-Z]{8}$",commodiymap,coEarmap)){
 			return;
 		}
 
@@ -183,9 +181,8 @@ class CalculateSales {
 	public static boolean inPutfile(
 			String dirPath,
 			String fileName,
-			String noFile,
+			String lstFile,
 			String numberDigits,
-			String injusticeFile,
 			HashMap<String,String> nameMap,
 			HashMap<String,Long> earningsMap
 			){
@@ -193,7 +190,7 @@ class CalculateSales {
 		try{
 			File file = new File(dirPath,fileName);
 			if(!file.exists()){
-				System.out.println(noFile);
+				System.out.println(lstFile+"定義ファイルが存在しません");
 				return false;
 			}
 			br = new BufferedReader (new FileReader(file));
@@ -202,7 +199,7 @@ class CalculateSales {
 				//一行ずつ","で分割する
 				String[]read = b.split(",");
 				if(read.length != 2 || !read[0].matches(numberDigits)){
-					System.out.println(injusticeFile);
+					System.out.println(lstFile+"定義ファイルのフォーマットが不正です");
 					return false;
 				}//支店コードマップ
 				nameMap.put(read[0],read[1]);
