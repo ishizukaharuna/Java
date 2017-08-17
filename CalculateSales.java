@@ -169,7 +169,7 @@ class CalculateSales {
 				Long coTotal = coEarmap.get(rcdlists.get(1)) + brEar;
 				coEarmap.put(rcdlists.get(1), coTotal);
 				String covaluse = Long.toString(coEarmap.get(rcdlists.get(1)));
-				if(covaluse.length() >10){
+				if(covaluse.length() > 10){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
