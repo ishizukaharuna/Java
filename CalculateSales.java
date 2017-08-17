@@ -41,8 +41,7 @@ class calculate_sales {
 			while((b = br.readLine()) !=null){
 				//一行ずつ","で分割する
 				String[]branch = b.split(",");
-				if(branch.length == 2 && branch[0].matches("^\\d{3}$")){
-				}else{
+				if(branch.length != 2 && !branch[0].matches("^\\d{3}$")){
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return;
 				}
@@ -77,8 +76,7 @@ class calculate_sales {
 			while((c=br.readLine()) !=null){
 				//一行ずつ","で分割する
 				String[] commodiy =c.split(",");
-				if(commodiy.length == 2 && commodiy[0].matches("^[0-9a-zA-Z]{8}$")){
-				}else{
+				if(commodiy.length != 2 && !commodiy[0].matches("^[0-9a-zA-Z]{8}$")){
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 					return;
 				}
@@ -152,20 +150,17 @@ class calculate_sales {
 					return;
 				}
 
-				if(rcdlists.get(2).matches("[^\\d]")){
+				if(rcdlists.get(2).matches("[\\d]")){
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-
-
 
 				//支店の売上をマップに置く（集計）
 				Long brEar = Long.parseLong(rcdlists.get(2));
 				Long brTotal = brEarmap.get(rcdlists.get(0)) + brEar;
 				brEarmap.put(rcdlists.get(0), brTotal);
 				String brvaluse = Long.toString(brEarmap.get(rcdlists.get(0)));
-				if(brvaluse.matches("^\\d{1,10}$")){
-				}else{
+				if(!brvaluse.matches("^\\d{1,10}$")){
 					System.out.println("合計金額が10桁を超えました");
 					return;
 				}
@@ -175,7 +170,6 @@ class calculate_sales {
 			}catch(NumberFormatException e){
 				System.out.println("予期せぬエラーが発生しました");
 				return;
-
 			}catch(IOException e){
 				System.out.println("予期せぬエラーが発生しました");
 				return;
@@ -217,7 +211,6 @@ class calculate_sales {
 			System.out.println("予期せぬエラーが発生しました。");
 			return;
 		}finally{
-
 			if(bw !=null)
 				try{
 					bw.close();
