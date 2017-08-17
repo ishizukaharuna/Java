@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-class calculate_sales {
+class CalculateSales {
 
 	public static void main(String[]args){
 		HashMap<String,String>branchmap = new HashMap<String,String>();
