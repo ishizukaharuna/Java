@@ -29,75 +29,15 @@ class CalculateSales {
 		}
 
 		//【branch.lst（支店定義ファイル）の読み込み】
-		BufferedReader br = null;
-		try{
-			File file = new File(args[0],"branch.lst");
-			if(!file.exists()){
-				System.out.println("支店定義ファイルが存在しません");
-				return;
-			}
-			br = new BufferedReader (new FileReader(file));
-			String b;
-			while((b = br.readLine()) !=null){
-				//一行ずつ","で分割する
-				String[]branch = b.split(",");
-				if(branch.length != 2 || !branch[0].matches("^\\d{3}$")){
-					System.out.println("支店定義ファイルのフォーマットが不正です");
-					return;
-				}
-				//支店コードマップ
-				branchmap.put(branch[0],branch[1]);
-				//支店の売上マップ
-				brEarmap.put(branch[0], 0L);
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!inPutfile(args[0],"branch.lst","支店定義ファイルが存在しません",
+				"^\\d{3}$","支店定義ファイルのフォーマットが不正です",branchmap,brEarmap)){
 			return;
-		}finally{
-			if(br !=null)
-				try{
-					br.close();
-				}catch(IOException e){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
 		}
-
 		//【commodiy.lst（商品定義ファイル）の読み込み】
-
-		try{
-			File file = new File(args[0],"commodity.lst");
-			if(!file.exists()){
-				System.out.println("商品定義ファイルが存在しません");
-				return;
-			}
-			br = new BufferedReader (new FileReader(file));
-			String c;
-			while((c=br.readLine()) !=null){
-				//一行ずつ","で分割する
-				String[] commodiy =c.split(",");
-				if(commodiy.length != 2 || !commodiy[0].matches("^[0-9a-zA-Z]{8}$")){
-					System.out.println("商品定義ファイルのフォーマットが不正です");
-					return;
-				}
-				//商品名マップ
-				commodiymap.put(commodiy[0],commodiy[1]);
-				//商品の売上マップ
-				coEarmap.put(commodiy[0], 0L);
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!inPutfile(args[0],"commodity.lst","商品定義ファイルが存在しません",
+				"^[0-9a-zA-Z]{8}$","商品定義ファイルのフォーマットが不正です",commodiymap,coEarmap)){
 			return;
-		}finally{
-			if(br != null)
-				try{
-					br.close();
-				}catch(IOException e){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
 		}
-
 
 		//inputディレクトリ読み込み→rcdファイルをリスト化
 		File dir = new File(args[0]);
@@ -122,7 +62,7 @@ class CalculateSales {
 				}
 			}
 		}
-
+		BufferedReader br = null;
 		//【rcdのファイルの読み込み（支店・商品・売上）】
 		for(int i = 0; i<rcdfiles.size(); i++){
 			try{
@@ -190,74 +130,99 @@ class CalculateSales {
 			}
 		}
 
+		//メソッド分け
 		//【ファイル書き込み】
-		//brTotal（支店別売上集計map）降順の指定
-		List<Map.Entry<String,Long>> brentries =
-			new ArrayList<Map.Entry<String,Long>>(brEarmap.entrySet());
-		Collections.sort(brentries, new Comparator<Map.Entry<String,Long>>() {
-
-			@Override
-	   		public int compare(
-	   		Entry<String,Long> entry1, Entry<String,Long> entry2) {
-	    	return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
-	    	}
-		});
-
-//		branch.outに書き込み
-		BufferedWriter bw = null;
-		try{
-			File file = new File(args[0],"branch.out");
-			FileWriter fw = new FileWriter(file);
-			bw = new BufferedWriter(fw);
-			for(Entry<String,Long> s :brentries){
-				bw.write(s.getKey() + "," + branchmap.get
-					(s.getKey()) + "," + s.getValue()+System.getProperty("line.separator"));
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!outPutfile(args[0],"branch.out",branchmap,brEarmap)){
 			return;
-		}finally{
-			if(bw !=null)
-				try{
-					bw.close();
-				}catch(IOException e){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
 		}
-
-		//coTotal（商品別売上集計map）降順の指定
-		List<Map.Entry<String,Long>> coentries =
-			new ArrayList<Map.Entry<String,Long>>(coEarmap.entrySet());
-		Collections.sort(coentries, new Comparator<Map.Entry<String,Long>>() {
-
-		@Override
-			public int compare(
-			Entry<String,Long> entry1, Entry<String,Long> entry2) {
-			return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
-			}
-		});
-
-		//commodiy.outに書き込み
-		try{
-			File file = new File(args[0],"commodity.out");
-			FileWriter fw = new FileWriter(file);
-			bw = new BufferedWriter(fw);
-			for(Entry<String,Long> s :coentries){;
-				bw.write(s.getKey() + "," + commodiymap.get
-						(s.getKey()) + "," + s.getValue()+System.getProperty("line.separator"));
-			}
-		}catch(IOException e){
-			System.out.println("予期せぬエラーが発生しました");
+		if(!outPutfile(args[0],"commodity.out",commodiymap,coEarmap)){
 			return;
-		}finally{
-			if(bw !=null)
-				try{
-					bw.close();
-				}catch(IOException e){
-					System.out.println("予期せぬエラーが発生しました");
-					return;
-				}
 		}
 	}
+
+	public static boolean outPutfile(
+			String dirPath,
+			String fileName,
+			HashMap<String,String> nameMap,
+			HashMap<String,Long> earningsMap
+			){
+		List<Map.Entry<String,Long>> coentries =
+				new ArrayList<Map.Entry<String,Long>>(earningsMap.entrySet());
+			Collections.sort(coentries, new Comparator<Map.Entry<String,Long>>() {
+
+			@Override
+				public int compare(
+				Entry<String,Long> entry1, Entry<String,Long> entry2) {
+				return ((Long)entry2.getValue()).compareTo((Long)entry1.getValue());
+				}
+			});
+		BufferedWriter bw = null;
+		try{
+			File file = new File(dirPath,fileName);
+			FileWriter fw = new FileWriter(file);
+			bw = new BufferedWriter(fw);
+			for(Entry<String,Long> s :coentries){
+				bw.write(s.getKey() + "," + nameMap.get(s.getKey())
+				+ "," + s.getValue()+System.getProperty("line.separator"));
+			}
+		}catch(IOException e){
+			System.out.println("予期せぬエラーが発生しました");
+			return false;
+		}finally{
+			if(bw !=null)
+				try{
+					bw.close();
+				}catch(IOException e){
+					System.out.println("予期せぬエラーが発生しました");
+					return false;
+				}
+			}
+		return true;
+	}
+
+	public static boolean inPutfile(
+			String dirPath,
+			String fileName,
+			String noFile,
+			String numberDigits,
+			String injusticeFile,
+			HashMap<String,String> nameMap,
+			HashMap<String,Long> earningsMap
+			){
+		BufferedReader br = null;
+		try{
+			File file = new File(dirPath,fileName);
+			if(!file.exists()){
+				System.out.println(noFile);
+				return false;
+			}
+			br = new BufferedReader (new FileReader(file));
+			String b;
+			while((b = br.readLine()) !=null){
+				//一行ずつ","で分割する
+				String[]read = b.split(",");
+				if(read.length != 2 || !read[0].matches(numberDigits)){
+					System.out.println(injusticeFile);
+					return false;
+				}//支店コードマップ
+				nameMap.put(read[0],read[1]);
+				//支店の売上マップ
+				earningsMap.put(read[0], 0L);
+			}
+		}catch(IOException e){
+			System.out.println("予期せぬエラーが発生しました");
+			return false;
+		}finally{
+			if(br !=null)
+				try{
+					br.close();
+				}catch(IOException e){
+					System.out.println("予期せぬエラーが発生しました");
+					return false;
+				}
+		}
+		return true;
+	}
+
+
 }
